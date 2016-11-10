@@ -1,0 +1,113 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/layout/template.xhtml">
+
+	<ui:define name="body">
+		<h2>MANTENIMIENTO USUARIOS</h2>
+		<h:form id="filtros" >
+			<p:fieldset legend="Criterios de Búsqueda de Usuarios">
+				<p:panelGrid columns="6" >
+					<p:outputLabel for="idUsuarioFiltro" value="DAS:" />
+					<p:inputText required="false" id="idUsuarioFiltro" value="#{usuarioController.filtro.idUsuario}"/>
+					<p:outputLabel for="nifFiltro" value="Nif:" />
+					<p:inputText required="false" id="nifFiltro" value="#{usuarioController.filtro.nif}"/>
+					<p:outputLabel for="nombreFiltro" value="Nombre:" />
+					<p:inputText required="false" id="nombreFiltro" value="#{usuarioController.filtro.nombre}"/>
+					<p:outputLabel for="primerApellidoFiltro" value="Primer Apellido:" />
+					<p:inputText required="false" id="primerApellidoFiltro" value="#{usuarioController.filtro.primerApellido}"/>
+					<p:outputLabel for="segundoApellidoFiltro" value="Segundo Apellido:" />
+					<p:inputText required="false" id="segundoApellidoFiltro" value="#{usuarioController.filtro.segundoApellido}"/>
+					<p:outputLabel for="telefonoFiltro" value="Teléfono:" />
+					<p:inputText required="false" id="telefonoFiltro" value="#{usuarioController.filtro.telefono}"/>
+					<p:outputLabel for="emailFiltro" value="EMail:" />
+					<p:inputText required="false" id="emailFiltro" value="#{usuarioController.filtro.email}"/>
+					<p:outputLabel for="fAltaFiltro" value="Fecha alta:" />
+					<p:inputText required="false" id="fAltaFiltro" value="#{usuarioController.filtro.fechaAlta}"/>
+					<p:outputLabel for="fBajaFiltro" value="Fecha baja:" />
+					<p:inputText required="false" id="fBajaFiltro" value="#{usuarioController.filtro.fechaBaja}"/>
+					
+		
+					<p:commandButton id="buscar" value="Buscar" actionListener="#{usuarioController.buscar}" update="listaResultados" />
+					<p:commandButton id="nuevo" value="Nuevo" actionListener="#{usuarioController.nuevoUsuario}" update="detalleForm" oncomplete="PF('detalle').show()" />
+					<p:commandButton value="Vaciar campos" icon="ui-icon-close" actionListener="#{usuarioController.resetForm}" update="filtros" />
+				</p:panelGrid>
+			</p:fieldset>
+			
+			<p:fieldset legend="Resultados de la Búsqueda de Usuarios">
+				<p:dataTable 	id="listaResultados" value="#{usuarioController.usuarios}" rowKey="#{usuario.idUsuario}" emptyMessage="No se encontraron resultados"
+								var="usuario" sortMode="single" selectionMode="single" selection="#{usuarioController.usuarioSeleccionado}">
+		
+					<p:ajax event="rowSelect" update="detalleForm:detalleFragment"  oncomplete="PF('detalle').show()"/>
+					
+					<p:column headerText="Rol" sortBy="#{usuario.rolBean.nombre}">
+						<h:outputText value="#{usuario.rolBean.nombre}" />
+					</p:column>
+					<p:column headerText="DAS" sortBy="#{usuario.idUsuario}">
+						<h:outputText value="#{usuario.idUsuario}" />
+					</p:column>
+					<p:column headerText="Nombre" sortBy="#{usuario.nombre}">
+						<h:outputText value="#{usuario.nombre}" />
+					</p:column>
+					<p:column headerText="Primer Apellido" sortBy="#{usuario.primerApellido}">
+						<h:outputText value="#{usuario.primerApellido}" />
+					</p:column>
+					<p:column headerText="Segundo Apellido" sortBy="#{usuario.segundoApellido}">
+						<h:outputText value="#{usuario.segundoApellido}" />
+					</p:column>
+					<p:column headerText="Nif" sortBy="#{usuario.nif}">
+						<h:outputText value="#{usuario.nif}" />
+					</p:column>
+					<p:column headerText="Teléfono" sortBy="#{usuario.telefono}">
+						<h:outputText value="#{usuario.telefono}" />
+					</p:column>
+					<p:column headerText="E-mail" sortBy="#{usuario.email}">
+						<h:outputText value="#{usuario.email}" />
+					</p:column>
+					<p:column headerText="Fecha alta" sortBy="#{usuario.fechaAlta}">
+						<h:outputText value="#{usuario.fechaAlta}" />
+					</p:column>
+					<p:column headerText="Fecha baja" sortBy="#{usuario.fechaBaja}">
+						<h:outputText value="#{usuario.fechaBaja}" />
+					</p:column>
+				</p:dataTable>
+			</p:fieldset>
+		</h:form>
+			
+			
+		<h:form id="detalleForm">
+			<p:dialog id="dialogoDetalle" widgetVar="detalle" resizable="false" header="Detalle de Usuario" modal="true">
+				<p:fragment id="detalleFragment">
+					<h:panelGrid columns="2" cellpadding="5">
+						<p:outputLabel for="idUsuario" value="DAS:" />
+						<p:inputText required="true" id="idUsuario" maxlength="7" value="#{usuarioController.usuarioSeleccionado.idUsuario}" disabled="#{usuarioController.usuarioSeleccionado.idUsuario != null}"/>
+						<p:outputLabel for="nombre" value="Nombre:" />
+						<p:inputText required="true" id="nombre" value="#{usuarioController.usuarioSeleccionado.nombre}"/>
+						<p:outputLabel for="primerApellido" value="Primer Apellido:" />
+						<p:inputText required="true" id="primerApellido" value="#{usuarioController.usuarioSeleccionado.primerApellido}"/>
+						<p:outputLabel for="segundoApellido" value="Segundo Apellido:" />
+						<p:inputText required="false" id="segundoApellido" value="#{usuarioController.usuarioSeleccionado.segundoApellido}"/>
+						<p:outputLabel for="combo2" value="Rol:" />
+						<p:selectOneMenu required="true" id="combo2" value="#{usuarioController.usuarioSeleccionado.rolBean}" converter="entityConverter2">
+							<f:selectItem itemValue="#{usuarioController.usuarioSeleccionado.rolBean}" itemLabel="#{usuarioController.usuarioSeleccionado.rolBean.nombre}"/>
+							<f:selectItems value="#{usuarioController.roles}" var="rol" itemLabel="#{rol.nombre}" itemValue="#{rol}" />
+						</p:selectOneMenu>
+						<p:outputLabel for="email" value="EMail:" />
+						<p:inputText required="true" id="email" value="#{usuarioController.usuarioSeleccionado.email}"/>
+						<p:outputLabel for="telefono" value="Teléfono:" />
+						<p:inputText required="false" id="telefono" value="#{usuarioController.usuarioSeleccionado.telefono}"/>
+					</h:panelGrid>	
+					<h:panelGrid columns="3" >
+						<p:commandButton id="guardarNuevo" value="Guardar" actionListener="#{usuarioController.insertar}" update="detalleFragment,filtros:listaResultados" rendered="#{usuarioController.usuarioSeleccionado.idUsuario == null}" oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+						<p:commandButton id="modificar" value="Guardar" actionListener="#{usuarioController.actualizar}" update="detalleFragment,filtros:listaResultados" rendered="#{usuarioController.usuarioSeleccionado.idUsuario != null}"  oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+						<p:commandButton id="eliminar" value="Borrar" actionListener="#{usuarioController.borrar}" update="detalleFragment,filtros:listaResultados" rendered="#{usuarioController.usuarioSeleccionado.idUsuario != null}"  oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+						<p:commandButton id="cancelar" value="Cancelar" immediate="true" oncomplete="PF('detalle').hide()"/>
+					</h:panelGrid>
+				</p:fragment>
+			
+			</p:dialog>
+		
+		</h:form>
+	</ui:define>
+</ui:composition>

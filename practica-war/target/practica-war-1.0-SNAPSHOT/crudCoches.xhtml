@@ -1,0 +1,99 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/layout/template.xhtml">
+
+<ui:define name="body">
+	<h:form id="filtros">
+		<p:panel header="Búsqueda de coches">
+			<p:panelGrid columns="8" id="gridBusqueda">
+				<p:outputLabel for="propietario" value="Propietario:"/>
+					<p:inputText id="propietario" value="#{filtroCocheMB.filtro.propietario}">
+				</p:inputText>
+				<p:outputLabel for="conductor" value="Conductor"/>
+					<p:inputText id="conductor" value="#{filtroCocheMB.filtro.conductor}">
+				</p:inputText>
+				<p:outputLabel for="matricula" value="Matrícula:"/>
+					<p:inputText id="matricula" value="#{filtroCocheMB.filtro.matricula}">
+				</p:inputText>
+				<p:outputLabel for="marca" value="Marca:"/>
+					<p:inputText id="marca" value="#{filtroCocheMB.filtro.marca}">
+				</p:inputText>
+				<p:outputLabel for="modelo" value="Modelo:" />
+					<p:inputText id="modelo" value="#{filtroCocheMB.filtro.modelo}">
+				</p:inputText>
+				<p:outputLabel for="anoDesde" value="Año desde:" />
+					<p:inputText id="anoDesde" value="#{filtroCocheMB.filtro.anoDesde}">
+				</p:inputText>
+				<p:outputLabel for="anoHasta" value="Año hasta:" />
+					<p:inputText id="anoHasta" value="#{filtroCocheMB.filtro.anoHasta}">
+				</p:inputText>
+<!-- 				<p:outputLabel for="none" value="" /> -->
+				<p:commandButton value="Vaciar campos" icon="ui-icon-close" actionListener="#{filtroCocheMB.resetForm}" update="gridBusqueda" />
+				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{filtroCocheMB.buscar}" update="tablaCoches gridBusqueda" />
+				<p:commandButton id="nuevo" value="Nuevo" icon="ui-icon-star" actionListener="#{filtroCocheMB.nuevoCoche}" update="detalleForm" oncomplete="PF('detalle').show()" />
+			</p:panelGrid>
+		</p:panel>
+	
+		<p:panel header="Resultados de la búsqueda">
+		 	<p:dataTable id="tablaCoches" value="#{filtroCocheMB.coches}" rowKey="#{row.matricula}" var="row" scrollable="true" 
+		 		scrollHeight="300" sortMode="single" selectionMode="single" selection="#{filtroCocheMB.cocheSeleccionado}" emptyMessage="No se encontraron resultados">
+				<p:ajax event="rowSelect" update="detalleForm:detalleFragment"  oncomplete="PF('detalle').show()"/>
+				<p:column headerText="Matrícula" sortBy="#{row.matricula}">
+					<h:outputText value="#{row.matricula}" />
+				</p:column>
+				<p:column headerText="Marca" sortBy="#{row.marca}">
+					<h:outputText value="#{row.marca}" />
+				</p:column>
+				<p:column headerText="Modelo" sortBy="#{row.modelo}">
+					<h:outputText value="#{row.modelo}" />
+				</p:column>
+				<p:column headerText="Año" sortBy="#{row.ano}">
+					<h:outputText value="#{row.ano}" />
+				</p:column>
+				<p:column headerText="Propietario" sortBy="#{row.propietario.nombre}">
+					<h:outputText value="#{row.propietario.nombre}" />
+				</p:column>
+				<p:column headerText="Conductor" sortBy="#{row.conductor.nombre}">
+					<h:outputText value="#{row.conductor.nombre}" />
+				</p:column>
+		 	</p:dataTable>
+		</p:panel>
+	</h:form>
+	
+	<h:form id="detalleForm">
+		<p:dialog id="dialogoDetalle" widgetVar="detalle" resizable="false" header="Detalle de Coche" modal="true">
+			<p:fragment id="detalleFragment">
+				<h:panelGrid columns="2" cellpadding="5">
+					<p:outputLabel for="combo" value="Propietario:" />
+						<p:selectOneMenu required="true" id="combo" value="#{filtroCocheMB.cocheSeleccionado.propietario}" converter="entityConverter2">
+							<f:selectItem itemValue="#{filtroCocheMB.cocheSeleccionado.propietario}" itemLabel="#{filtroCocheMB.cocheSeleccionado.propietario.nombre}"/>
+							<f:selectItems value="#{filtroCocheMB.personas}" var="persona" itemLabel="#{persona.nombre}" itemValue="#{persona}" />
+						</p:selectOneMenu>
+					<p:outputLabel for="combo2" value="Conductor:" />
+						<p:selectOneMenu required="true" id="combo2" value="#{filtroCocheMB.cocheSeleccionado.conductor}" converter="entityConverter2">
+							<f:selectItem itemValue="#{filtroCocheMB.cocheSeleccionado.conductor}" itemLabel="#{filtroCocheMB.cocheSeleccionado.conductor.nombre}"/>
+							<f:selectItems value="#{filtroCocheMB.personas}" var="persona2" itemLabel="#{persona2.nombre}" itemValue="#{persona2}" />
+						</p:selectOneMenu>
+					<p:outputLabel for="matricula" value="Matrícula:" />
+						<p:inputText required="true" id="matricula" value="#{filtroCocheMB.cocheSeleccionado.matricula}" disabled="#{filtroCocheMB.cocheSeleccionado.matricula != null}"/>
+					<p:outputLabel for="marca" value="Marca:" />
+						<p:inputText required="true" id="marca" value="#{filtroCocheMB.cocheSeleccionado.marca}"/>
+					<p:outputLabel for="modelo" value="Modelo:" />
+						<p:inputText required="true" id="modelo" value="#{filtroCocheMB.cocheSeleccionado.modelo}"/>
+					<p:outputLabel for="ano" value="Año:" />
+						<p:inputText required="true" id="ano" value="#{filtroCocheMB.cocheSeleccionado.ano}"/>
+				</h:panelGrid>	
+				<h:panelGrid columns="3" >
+					<p:commandButton id="guardarNuevo" value="Guardar" icon="ui-icon-disk" actionListener="#{filtroCocheMB.insertar}" update="detalleFragment,filtros:tablaCoches" rendered="#{filtroCocheMB.cocheSeleccionado.matricula == null}" oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+					<p:commandButton id="modificar" value="Guardar" icon="ui-icon-disk" actionListener="#{filtroCocheMB.actualizar}" update="detalleFragment,filtros:tablaCoches" rendered="#{filtroCocheMB.cocheSeleccionado.matricula != null}"  oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+					<p:commandButton id="eliminar" value="Borrar" icon="ui-icon-close" actionListener="#{filtroCocheMB.borrar}" update="detalleFragment,filtros:tablaCoches" rendered="#{filtroCocheMB.cocheSeleccionado.matricula != null}"  oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+					<p:commandButton id="cancelar" value="Cancelar" icon="ui-icon-cancel" immediate="true" oncomplete="PF('detalle').hide()"/>
+				</h:panelGrid>
+			</p:fragment>
+		</p:dialog>
+	</h:form>
+	
+</ui:define>
+</ui:composition>

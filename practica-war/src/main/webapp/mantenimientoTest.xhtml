@@ -1,0 +1,131 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/layout/template.xhtml">
+
+	<ui:define name="body">
+		<h:form id="filtros">
+			<p:panel header="Busqueda de test">
+				<p:panelGrid columns="7">
+
+					<p:outputLabel for="nombreFiltro" value="Nombre:" />
+					<p:inputText required="false" id="nombreFiltro"
+						value="#{testController.filtro.nombre}" />
+
+				
+					<p:outputLabel for="fechaInicioDesdeFiltro" value="Fecha inicio" />
+					<p:outputLabel for="fechaInicioDesdeFiltro" value="desde:" />
+					<p:calendar id="fechaInicioDesdeFiltro" value="#{calendarView.date3}"
+						showOn="button" />
+					
+					
+						<p:outputLabel for="fechaInicioHastaFiltro" value="hasta:" />
+					<p:calendar id="fechaInicioHastaFiltro" value="#{calendarView.date3}"
+						showOn="button" />
+						
+								<p:outputLabel for="numeroOportunidadesFiltro"
+						value="Numero de oportunidades:" />	
+					<p:inputText required="false" id="numeroOportunidadesFiltro"
+						value="#{testController.filtro.numeroOportunidades}" />
+						
+				
+					<p:outputLabel for="fechaFinDesdeFiltro" value="Fecha fin" />
+					<p:outputLabel for="fechaFinDesdeFiltro" value="desde:" />
+					<p:calendar id="fechaFinDesdeFiltro" value="#{calendarView.date3}"
+						showOn="button" />
+						
+							<p:outputLabel for="fechaFinHastaFiltro" value="hasta:" />
+					<p:calendar id="fechaFinHastaFiltro" value="#{calendarView.date3}"
+						showOn="button" />
+
+					<p:commandButton id="buscar" value="Buscar"
+						actionListener="#{testController.buscar}" update="listaResultados" />
+					<p:commandButton id="nuevo" value="Nuevo"
+						actionListener="#{testController.nuevoUsuario}"
+						update="detalleForm" oncomplete="PF('detalle').show()" />
+				</p:panelGrid>
+			</p:panel>
+
+			<p:panel header="Test">
+				<p:dataTable id="listaResultados" value="#{testController.lista}"
+					rowKey="#{test.idTest}" var="tests" sortMode="single"
+					selectionMode="single"
+					selection="#{testController.testSeleccionado}">
+
+					<p:ajax event="rowSelect" update="detalleForm:detalleFragment"
+						oncomplete="PF('detalle').show()" />
+
+					<p:column headerText="Nombre" sortBy="#{test.idTest}">
+						<h:outputText value="#{test.idTest}" />
+					</p:column>
+					<p:column headerText="Editar pregunta"
+						sortBy="#{test.editarPregunta}">
+						<h:outputText value="#{test.editarPregunta}" />
+					</p:column>
+					<p:column headerText="Asignar a usuarios"
+						sortBy="#{test.AsignarUsuario}">
+						<h:outputText value="#{test.AsignarUsuario}" />
+					</p:column>
+					<p:column headerText="Editar" sortBy="#{test.editar}">
+						<h:outputText value="#{test.editar}" />
+					</p:column>
+					<p:column headerText="Borrar" sortBy="#{test.borrar}">
+						<h:outputText value="#{test.borrar}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+
+
+		<h:form id="detalleForm">
+			<p:dialog id="dialogoDetalle" widgetVar="detalle" resizable="false"
+				header="Test" modal="true">
+				<p:fragment id="detalleFragment">
+					<h:panelGrid columns="2" cellpadding="5">
+						<p:outputLabel for="idUsuario" value="Id_Usuario:" />
+						<p:inputText required="true" id="idUsuario" maxlength="7"
+							value="#{usuarioController.usuarioSeleccionado.idUsuario}"
+							disabled="#{usuarioController.usuarioSeleccionado.idUsuario != null}" />
+						<p:outputLabel for="primerApellido" value="Primer Apellido:" />
+						<p:inputText required="true" id="primerApellido"
+							value="#{usuarioController.usuarioSeleccionado.primerApellido}" />
+						<p:outputLabel for="segundoApellido" value="Segundo Apellido:" />
+						<p:inputText required="false" id="segundoApellido"
+							value="#{usuarioController.usuarioSeleccionado.segundoApellido}" />
+						<p:outputLabel for="nombre" value="Nombre:" />
+						<p:inputText required="true" id="nombre"
+							value="#{usuarioController.usuarioSeleccionado.nombre}" />
+						<p:outputLabel for="email" value="EMail:" />
+						<p:inputText required="true" id="email"
+							value="#{usuarioController.usuarioSeleccionado.email}" />
+						<p:outputLabel for="telefono" value="Teléfono:" />
+						<p:inputText required="false" id="telefono"
+							value="#{usuarioController.usuarioSeleccionado.telefono}" />
+					</h:panelGrid>
+					<h:panelGrid columns="3">
+						<p:commandButton id="guardarNuevo" value="Guardar"
+							actionListener="#{usuarioController.insertar}"
+							update="detalleFragment,filtros:listaResultados"
+							rendered="#{usuarioController.usuarioSeleccionado.idUsuario == null}"
+							oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()" />
+						<p:commandButton id="modificar" value="Guardar"
+							actionListener="#{usuarioController.actualizar}"
+							update="detalleFragment,filtros:listaResultados"
+							rendered="#{usuarioController.usuarioSeleccionado.idUsuario != null}"
+							oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()" />
+						<p:commandButton id="eliminar" value="Borrar"
+							actionListener="#{usuarioController.borrar}"
+							update="detalleFragment,filtros:listaResultados"
+							rendered="#{usuarioController.usuarioSeleccionado.idUsuario != null}"
+							oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()" />
+						<p:commandButton id="cancelar" value="Cancelar" immediate="true"
+							oncomplete="PF('detalle').hide()" />
+					</h:panelGrid>
+				</p:fragment>
+
+			</p:dialog>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

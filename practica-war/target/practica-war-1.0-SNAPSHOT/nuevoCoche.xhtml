@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Registrar COCHE</title>
+	<link rel="stylesheet" type="text/css" href="/practica-war/css/style.css" />
+</h:head>
+<h:body>
+	<h:form>
+		<p:panelGrid columns="2" id="grid">
+				<p:outputLabel for="matricula" value="Matrícula:"/>
+				<p:inputText id="matricula" value="#{cocheMB.c.matricula}">
+				</p:inputText>
+				
+				<p:outputLabel for="ano" value="AÑO:"/>
+				<p:inputText id="ano" value="#{cocheMB.c.ano}">
+				</p:inputText>
+				
+				<p:outputLabel for="marca" value="MARCA:"/>
+				<p:inputText id="marca" value="#{cocheMB.c.marca}">
+				</p:inputText>
+				
+				
+				<p:outputLabel for="modelo" value="MODELO:" />
+				<p:inputText id="modelo" value="#{cocheMB.c.modelo}">
+				</p:inputText>
+				
+				<p:selectOneMenu id="combo" value="#{cocheMB.c.propietario}" converter="entityConverter2">
+					<f:selectItem itemValue="null" itemLabel="Selecciona propietario"/>
+					<f:selectItems value="#{cocheMB.personas}" var="persona" itemLabel="#{persona.nombre}" itemValue="#{persona}" />
+				</p:selectOneMenu>
+				
+				<p:commandButton value="Guardar Registro" actionListener="#{cocheMB.guardar}" update="tablaCoches grid"></p:commandButton>
+		</p:panelGrid>
+	</h:form>
+	
+ 	<p:dataTable id="tablaCoches" value="#{cocheMB.coches}" rowKey="#{row.matricula}" var="row" rows="12"
+		paginator="true" paginatorPosition="bottom" sortMode="single" selectionMode="single" emptyMessage="No se encontraron resultados">
+
+		<p:column headerText="Matrícula" sortBy="#{row.matricula}">
+			<h:outputText value="#{row.matricula}" />
+		</p:column>
+		
+		<p:column headerText="Marca" sortBy="#{row.marca}">
+			<h:outputText value="#{row.marca}" />
+		</p:column>
+		
+		<p:column headerText="Modelo" sortBy="#{row.modelo}">
+			<h:outputText value="#{row.modelo}" />
+		</p:column>
+		
+		<p:column headerText="Año" sortBy="#{row.ano}">
+			<h:outputText value="#{row.ano}" />
+		</p:column>
+		
+		<p:column headerText="Propietario" sortBy="#{row.propietario.nombre}">
+			<h:outputText value="#{row.propietario.nombre}" />
+		</p:column>
+		
+ 	</p:dataTable>
+	
+</h:body>
+</html>

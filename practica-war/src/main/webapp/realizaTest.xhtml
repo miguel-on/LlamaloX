@@ -1,0 +1,40 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/layout/template.xhtml">
+
+	<ui:define name="body">
+
+		<div>
+			<p:dataTable var="Test" value="#{dtBasicView.Test}">
+				<f:facet name="header">
+			Test a los que tienes acceso
+			</f:facet>
+<!-- 								<p:dataTable id="tablaTest" value="#{filtroTestMB.Test}" -->
+<!-- 									rowKey="#{row.Test}" var="row" scrollable="true" -->
+<!-- 									scrollHeight="300" sortMode="single" selectionMode="single" -->
+<!-- 									selection="#{filtroTestMB.TestSeleccionado}" -->
+<!-- 									emptyMessage="No se encontraron resultados"> -->
+<!-- 									<p:ajax event="rowSelect" update="detalleForm:detalleFragment" -->
+<!-- 										oncomplete="PF('detalle').show()" /> -->
+				<p:column headerText="Nombre">
+					<h:outputText value="#{Test.nombre}" />
+				</p:column>
+				<p:column headerText="Descripción">
+					<h:outputText value="#{Test.descripcion}" />
+				</p:column>
+				<p:column headerText="Intentos">
+					<h:outputText value="#{Test.numeroOportunidades}" />
+				</p:column>
+				<p:column headerText="Fecha inicio">
+					<h:outputText value="#{Test.fechaInicio}" />
+				</p:column>
+				<p:column headerText="Fecha fin">
+					<h:outputText value="#{Test.fechaFin}" />
+				</p:column>
+			</p:dataTable>
+		</div>
+
+	</ui:define>
+</ui:composition>

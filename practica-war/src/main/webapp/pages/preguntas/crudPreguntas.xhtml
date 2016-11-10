@@ -1,0 +1,83 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/layout/template.xhtml">
+
+<ui:define name="body">
+	<h:form id="filtros">
+		<p:panel header="Búsqueda de Preguntas">
+			<p:panelGrid columns="4" id="gridBusqueda">
+				<p:outputLabel for="idPregunta" value="Codigo de Pregunta:"/>
+					<p:inputText id="idPregunta" value="#{filtroPreguntaMB.filtro.idPregunta}">
+				</p:inputText>
+				<p:outputLabel for="texto" value="Enunciado: "/>
+					<p:inputText id="texto" value="#{filtroPreguntaMB.filtro.texto}">
+				</p:inputText>
+				
+<!-- 				<p:outputLabel for="none" value="" /> -->
+				<p:commandButton value="Vaciar campos" icon="ui-icon-close" actionListener="#{filtroPreguntaMB.resetForm}" update="gridBusqueda" />
+				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{filtroPreguntaMB.buscar}" update="tablaPreguntas gridBusqueda" />
+				<p:commandButton id="nuevo" value="Nuevo" icon="ui-icon-star" actionListener="#{filtroPreguntaMB.nuevoPregunta}" update="detalleForm" oncomplete="PF('detalle').show()" />
+			</p:panelGrid>
+		</p:panel>
+	
+		<p:panel header="Resultados de la búsqueda">
+			 	<p:dataTable id="tablaPreguntas" value="#{filtroPreguntaMB.lista}" rowKey="#{row.idPregunta}" var="row" scrollable="true" 
+			 		scrollHeight="300" sortMode="single" selectionMode="single" selection="#{filtroPreguntaMB.preguntaSeleccionado}" emptyMessage="No se encontraron resultados">
+					<p:ajax event="rowSelect" update="detalleForm:detalleFragment"  oncomplete="PF('detalle').show()"/>
+					<p:column headerText="Numero de pregunta" sortBy="#{row.idPregunta}">
+						<h:outputText value="#{row.idPregunta}" />
+					</p:column>
+					<p:column headerText="Enunciado de pregunta" sortBy="#{row.text}">
+						<h:outputText value="#{row.text}" />
+					</p:column>
+					<p:column headerText="Anadir respuesta ">	
+						<p:commandButton id="anadir" value="Anadir" icon="ui-icon-star" actionListener="#{filtroPreguntaMB.anadir}" update="detalleForm" oncomplete="PF('detalle').show()" />
+					</p:column>					
+					
+					
+			 	</p:dataTable>
+			</p:panel> 
+	</h:form>
+	
+ 	<h:form id="detalleForm">
+		<p:dialog id="dialogoDetalle" widgetVar="detalle" resizable="false" header="Detalle de Pregunta" modal="true">
+			<p:fragment id="detalleFragment">
+				<h:panelGrid columns="2" cellpadding="5">
+					
+					<p:outputLabel for="idPregunta" value="Numero de Pregunta:" />
+						<p:inputText required="true" id="idPregunta" value="#{filtroPreguntaMB.preguntaSeleccionado.idPregunta}" disabled="#{filtroPreguntaMB.preguntaSeleccionado.idPregunta != null}"/>
+					<p:outputLabel for="texto" value="Enunciado de pregunta:" />
+						<p:inputText required="true" id="texto" value="#{filtroPreguntaMB.preguntaSeleccionado.texto}"/>
+					
+				</h:panelGrid>	
+				<h:panelGrid columns="3" >
+					<p:commandButton id="guardarNuevo" value="Guardar" icon="ui-icon-disk" actionListener="#{filtroPreguntaMB.insertar}" update="detalleFragment,filtros:tablaPreguntas" rendered="#{filtroPreguntaMB.preguntaSeleccionado.idPregunta == null}" oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+					<p:commandButton id="modificar" value="Guardar" icon="ui-icon-disk" actionListener="#{filtroPreguntaMB.actualizar}" update="detalleFragment,filtros:tablaPreguntas" rendered="#{filtroPreguntaMB.preguntaSeleccionado.idPregunta != null}"  oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+					<p:commandButton id="eliminar" value="Borrar" icon="ui-icon-close" actionListener="#{filtroPreguntaMB.borrar}" update="detalleFragment,filtros:tablaPreguntas" rendered="#{filtroPreguntaMB.preguntaSeleccionado.idPregunta != null}"  oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+					<p:commandButton id="cancelar" value="Cancelar" icon="ui-icon-cancel" immediate="true" oncomplete="PF('detalle').hide()"/>
+				</h:panelGrid>
+			</p:fragment>
+		</p:dialog>
+	</h:form>
+	<h:form id="detalleForm2">
+		<p:dialog id="dialogoDetalle" widgetVar="detalle" resizable="false" header="Anadir Respuesta a Pregunta" modal="true">
+			<p:fragment id="detalleFragment">
+				<h:panelGrid columns="1" cellpadding="5">				
+					<p:outputLabel for="idPregunta" value="Numero de Pregunta: 		#{filtroPreguntaMB.preguntaSeleccionado.idPregunta}" />
+					<p:outputLabel for="texto" 		value="Enunciado de pregunta: 	#{filtroPreguntaMB.preguntaSeleccionado.texto}"/>	
+					<p:outputLabel for="pregunta" 	value="Enunciado de pregunta: 	#{filtroPreguntaMB.preguntaSeleccionado.texto}"/>
+				</h:panelGrid>	
+				<h:panelGrid columns="3" >
+					<p:commandButton id="guardarNuevo" value="Guardar" icon="ui-icon-disk" actionListener="#{filtroPreguntaMB.insertar}" update="detalleFragment,filtros:tablaPreguntas" rendered="#{filtroPreguntaMB.preguntaSeleccionado.idPregunta == null}" oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+					<p:commandButton id="modificar" value="Guardar" icon="ui-icon-disk" actionListener="#{filtroPreguntaMB.actualizar}" update="detalleFragment,filtros:tablaPreguntas" rendered="#{filtroPreguntaMB.preguntaSeleccionado.idPregunta != null}"  oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+					<p:commandButton id="eliminar" value="Borrar" icon="ui-icon-close" actionListener="#{filtroPreguntaMB.borrar}" update="detalleFragment,filtros:tablaPreguntas" rendered="#{filtroPreguntaMB.preguntaSeleccionado.idPregunta != null}"  oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+					<p:commandButton id="cancelar" value="Cancelar" icon="ui-icon-cancel" immediate="true" oncomplete="PF('detalle').hide()"/>
+				</h:panelGrid>
+			</p:fragment>
+		</p:dialog>
+	</h:form>
+ 	
+</ui:define>
+</ui:composition>

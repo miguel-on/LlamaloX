@@ -1,0 +1,81 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/layout/template.xhtml">
+
+	<ui:define name="body">
+		<h:form id="filtros" >
+			<p:panel header="Criterios de Búsqueda de Usuarios">
+				<p:panelGrid columns="6" >
+					<p:outputLabel for="apellido1Filtro" value="Primer Apellido:" />
+					<p:inputText required="false" id="apellido1Filtro" value="#{usuarioController.filtro.apellido1}"/>
+					<p:outputLabel for="apellido2Filtro" value="Segundo Apellido:" />
+					<p:inputText required="false" id="apellido2Filtro" value="#{usuarioController.filtro.apellido2}"/>
+					<p:outputLabel for="nombreFiltro" value="Nombre:" />
+					<p:inputText required="false" id="nombreFiltro" value="#{usuarioController.filtro.nombre}"/>
+					<p:outputLabel for="codigoFiltro" value="Código:" />
+					<p:inputText required="false" id="codigoFiltro" value="#{usuarioController.filtro.codigo}"/>
+					<p:outputLabel for="emailFiltro" value="EMail:" />
+					<p:inputText required="false" id="emailFiltro" value="#{usuarioController.filtro.email}"/>
+					<p:outputLabel for="telefonoFiltro" value="Teléfono:" />
+					<p:inputText required="false" id="telefonoFiltro" value="#{usuarioController.filtro.telefono}"/>
+					
+					<p:commandButton id="buscar" value="Buscar" actionListener="#{usuarioController.buscar}" update="listaResultados" />
+					<p:commandButton id="nuevo" value="Nuevo" actionListener="#{usuarioController.nuevoUsuario}" update="detalleForm" oncomplete="PF('detalle').show()" />
+				</p:panelGrid>
+			</p:panel>
+			
+			<p:panel header="Resultados de la Búsqueda de Usuarios">
+				<p:dataTable 	id="listaResultados" value="#{usuarioController.lista}" rowKey="#{usuario.codigo}" 
+								var="usuario" sortMode="single" selectionMode="single" selection="#{usuarioController.usuarioSeleccionado}">
+		
+					<p:ajax event="rowSelect" update="detalleForm:detalleFragment"  oncomplete="PF('detalle').show()"/>
+					
+					<p:column headerText="Código" sortBy="#{usuario.codigo}">
+						<h:outputText value="#{usuario.codigo}" />
+					</p:column>
+					<p:column headerText="Primer Apellido" sortBy="#{usuario.apellido1}">
+						<h:outputText value="#{usuario.apellido1}" />
+					</p:column>
+					<p:column headerText="Segundo Apellido" sortBy="#{usuario.apellido2}">
+						<h:outputText value="#{usuario.apellido2}" />
+					</p:column>
+					<p:column headerText="Nombre" sortBy="#{usuario.nombre}">
+						<h:outputText value="#{usuario.nombre}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+			
+			
+		<h:form id="detalleForm">
+			<p:dialog id="dialogoDetalle" widgetVar="detalle" resizable="false" header="Detalle de Usuario" modal="true">
+				<p:fragment id="detalleFragment">
+					<h:panelGrid columns="2" cellpadding="5">
+						<p:outputLabel for="codigo" value="Código:" />
+						<p:inputText required="true" id="codigo" maxlength="7" value="#{usuarioController.usuarioSeleccionado.codigo}" disabled="#{usuarioController.usuarioSeleccionado.codigo != null}"/>
+						<p:outputLabel for="apellido1" value="Primer Apellido:" />
+						<p:inputText required="true" id="apellido1" value="#{usuarioController.usuarioSeleccionado.apellido1}"/>
+						<p:outputLabel for="apellido2" value="Segundo Apellido:" />
+						<p:inputText required="false" id="apellido2" value="#{usuarioController.usuarioSeleccionado.apellido2}"/>
+						<p:outputLabel for="nombre" value="Nombre:" />
+						<p:inputText required="true" id="nombre" value="#{usuarioController.usuarioSeleccionado.nombre}"/>
+						<p:outputLabel for="email" value="EMail:" />
+						<p:inputText required="true" id="email" value="#{usuarioController.usuarioSeleccionado.email}"/>
+						<p:outputLabel for="telefono" value="Teléfono:" />
+						<p:inputText required="false" id="telefono" value="#{usuarioController.usuarioSeleccionado.telefono}"/>
+					</h:panelGrid>	
+					<h:panelGrid columns="3" >
+						<p:commandButton id="guardarNuevo" value="Guardar" actionListener="#{usuarioController.insertar}" update="detalleFragment,filtros:listaResultados" rendered="#{usuarioController.usuarioSeleccionado.codigo == null}" oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+						<p:commandButton id="modificar" value="Guardar" actionListener="#{usuarioController.actualizar}" update="detalleFragment,filtros:listaResultados" rendered="#{usuarioController.usuarioSeleccionado.codigo != null}"  oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+						<p:commandButton id="eliminar" value="Borrar" actionListener="#{usuarioController.borrar}" update="detalleFragment,filtros:listaResultados" rendered="#{usuarioController.usuarioSeleccionado.codigo != null}"  oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+						<p:commandButton id="cancelar" value="Cancelar" immediate="true" oncomplete="PF('detalle').hide()"/>
+					</h:panelGrid>
+				</p:fragment>
+			
+			</p:dialog>
+		
+		</h:form>
+	</ui:define>
+</ui:composition>

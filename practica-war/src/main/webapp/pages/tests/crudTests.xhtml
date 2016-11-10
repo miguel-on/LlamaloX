@@ -1,0 +1,97 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/layout/template.xhtml">
+
+<ui:define name="body">
+	<h:form id="filtros">
+		<p:panel header="Búsqueda de Tests">
+			<p:panelGrid columns="4" id="gridBusqueda">
+				<p:outputLabel for="nombreFiltro" value="Nombre:"/>
+					<p:inputText id="nombreFiltro" value="#{filtroTestMB.filtro.nombre}">
+				</p:inputText>
+				<p:outputLabel for="numeroOportunidadesFiltro" value="Numero de Oportunidades: "/>
+					<p:inputText id="numeroOportunidadesFiltro" value="#{filtroTestMB.filtro.numeroOportunidades}">
+				</p:inputText>
+				<p:outputLabel  for="fechaInicioDesdeFiltro" value="Fecha de Inicio   desde"/>
+					<p:calendar id="fechaInicioDesdeFiltro" value="#{filtroTestMB.filtro.fechaInicioDesde}">
+				</p:calendar>
+				<p:outputLabel  for="fechaInicioHastaFiltro" value=" hasta "/>
+					<p:calendar id="fechaInicioHastaFiltro" value="#{filtroTestMB.filtro.fechaInicioHasta}">
+				</p:calendar>
+				<p:outputLabel  for="fechaFinDesdeFiltro"    value="Fecha Fin          desde"/>
+					<p:calendar id="fechaFinDesdeFiltro" value="#{filtroTestMB.filtro.fechaFinDesde}">
+				</p:calendar>
+				<p:outputLabel  for="fechaFinHastaFiltro" value=" hasta "/>
+					<p:calendar id="fechaFinHastaFiltro" value="#{filtroTestMB.filtro.fechaFinHasta}">
+				</p:calendar>
+				<!--  			
+				<p:outputLabel for="none" value="" />
+				-->
+				<p:commandButton value="Vaciar campos" icon="ui-icon-close" actionListener="#{filtroTestMB.resetForm}" update="gridBusqueda" />
+				<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{filtroTestMB.buscar}" update="tablaTest gridBusqueda" />
+				<p:commandButton id="nuevo" value="Nuevo" icon="ui-icon-star" actionListener="#{filtroTestMB.nuevoTest}" update="detalleForm" oncomplete="PF('detalle').show()" />
+		 		
+		 	</p:panelGrid>
+		</p:panel>
+	
+		<p:panel header="Resultados de la búsqueda">
+		 	<p:dataTable id="tablaTest" value="#{filtroTestMB.lista}" rowKey="#{row.idTest}" var="row" scrollable="true" 
+		 		scrollHeight="300" sortMode="single" selectionMode="single" selection="#{filtroTestMB.testSeleccionado}" emptyMessage="No se encontraron resultados">
+				<p:ajax event="rowSelect" update="detalleForm:detalleFragment"  oncomplete="PF('detalle').show()"/>
+				<p:column headerText="Numero de test" sortBy="#{row.idTest}">
+					<h:outputText value="#{row.idTest}" />
+				</p:column>
+				<p:column headerText="Nombre" sortBy="#{row.nombre}">
+					<h:outputText value="#{row.nombre}" />
+				</p:column>
+				<p:column headerText="Descripcion" sortBy="#{row.description}">
+					<h:outputText value="#{row.description}" />
+				</p:column>
+				<p:column headerText="Fecha inicio" sortBy="#{row.fechaInicio}">
+					<h:outputText value="#{row.fechaInicio}" />
+				</p:column>
+				<p:column headerText="Fecha final" sortBy="#{row.fechaFin}">
+					<h:outputText value="#{row.fechaFin}" />
+				</p:column>
+				
+				
+		 	</p:dataTable>
+		</p:panel>
+		
+	</h:form>
+
+	
+	<h:form id="detalleForm">
+		<p:dialog id="dialogoDetalle" widgetVar="detalle" resizable="false" header="Detalle del test" modal="true">
+			<p:fragment id="detalleFragment">
+				<h:panelGrid columns="2" cellpadding="5">
+					
+					<p:outputLabel for="nombre" value="Nombre:" />
+						<p:inputText required="true" id="nombre" value="#{filtroTestMB.testSeleccionado.nombre}" disabled="#{filtroTestMB.testSeleccionado.nombre != null}"/>
+					<p:outputLabel for="descripcion" value="Descripcion:" />
+						<p:inputText required="true" id="descripcion" value="#{filtroTestMB.testSeleccionado.descripcion}"/>
+					<p:outputLabel for="numeroOportunidades" value="Numero de Oportunidades" />
+						<p:inputText required="true" id="numeroOportunidades" value="#{filtroTestMB.testSeleccionado.numeroOportunidades}"/>
+					<p:outputLabel for="fechaInicio1" value="Fecha Inicio: " />
+        				<p:calendar id="fechaInicio1" value="#{filtroTestMB.testSeleccionado.fechaInicio}" ></p:calendar>
+        			<p:outputLabel for="fechaFin1" value="Fecha Final:" />
+        				<p:calendar id="fechaFin1" value="#{filtroTestMB.testSeleccionado.fechaFin}" ></p:calendar>
+ 
+ 					
+
+
+				</h:panelGrid>	
+				<h:panelGrid columns="3" >
+					<p:commandButton id="guardarNuevo" value="Guardar" icon="ui-icon-disk" actionListener="#{filtroTestMB.insertar}" update="detalleFragment,filtros:tablaTest" rendered="#{filtroTestMB.testSeleccionado.idTest == null}" oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+					<p:commandButton id="modificar" value="Guardar" icon="ui-icon-disk" actionListener="#{filtroTestMB.actualizar}" update="detalleFragment,filtros:tablaTest" rendered="#{filtroTestMB.testSeleccionado.idTest != null}"  oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+					<p:commandButton id="eliminar" value="Borrar" icon="ui-icon-close" actionListener="#{filtroTestMB.borrar}" update="detalleFragment,filtros:tablaTest" rendered="#{filtroTestMB.testSeleccionado.idTest != null}"  oncomplete="if (args &amp;&amp; !args.validationFailed) PF('detalle').hide()"/>
+					<p:commandButton id="cancelar" value="Cancelar" icon="ui-icon-cancel" immediate="true" oncomplete="PF('detalle').hide()"/>
+				</h:panelGrid>
+			</p:fragment>
+		</p:dialog>
+	</h:form>
+
+</ui:define>
+</ui:composition>

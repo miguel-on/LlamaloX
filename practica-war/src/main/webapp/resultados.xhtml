@@ -1,0 +1,31 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/layout/template.xhtml">
+
+	<ui:define name="body">
+		<h2>RESULTADOS DE LOS TEST</h2>
+		
+		<h:form id="detalleForm">
+			<p:growl id="detalleFragment" showDetail="true" />
+			<p:fieldset legend="Relación de Test" >
+				
+			 	<p:dataTable id="tablaRoles" value="#{RolController.rol}" rowKey="#{row.nombre}" var="row" scrollable="true" 
+			 		scrollHeight="300" sortMode="single" selectionMode="single" selection="#{RolController.rolSeleccionado}" emptyMessage="No se encontraron test">
+					<p:ajax event="rowSelect" update=":detalleForm:detalleFragment"  oncomplete="PF('detalle').show()"/>
+					<p:column headerText="Nombre del test">
+						<h:outputText value="#{row.nombre}" />
+					</p:column>
+					<p:column headerText="Descripción">
+						<h:outputText value="#{row.descripcion}" />
+					</p:column>
+					
+			 	</p:dataTable>
+			</p:fieldset>
+			
+						
+		</h:form>
+		
+	</ui:define>
+</ui:composition>

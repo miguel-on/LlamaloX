@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>CEDEI Login</title>
+	<link rel="stylesheet" type="text/css" href="/practica-war/css/style.css" />
+</h:head>
+<h:body>
+	<h:form>
+		<p:panelGrid columns="2">
+				<p:outputLabel for="nombre" value="Nombre:"/>
+				<p:inputText id="nombre" value="#{pruebaMB.nombre}">
+					<p:ajax event="blur" process="@this" listener="#{pruebaMB.mayus}" update="nombre"></p:ajax>
+				</p:inputText>
+				
+				<p:outputLabel for="nif" value="NIF:"/>
+				<p:inputText id="nif" value="#{pruebaMB.nif}">
+					<p:ajax event="blur" process="@this" listener="#{pruebaMB.calculaLetra}" update="nif"></p:ajax>
+				</p:inputText>
+				<p:outputLabel for="blank" value=""/>
+				<p:commandButton value="Mostrar" actionListener="#{pruebaMB.mostrar}"></p:commandButton>
+		</p:panelGrid>
+	</h:form>
+</h:body>
+</html>

@@ -1,0 +1,30 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/layout/layoutHeader.xhtml">
+
+	<ui:define name="bodyCabecera">
+		<div>
+			<div style="height: 50px;">
+				<h:graphicImage url="/image/llamalox.png"
+					style="border:0; height:50px; float: left;  margin-left: 15px;" />
+				<p:commandButton id="button" value="CERRAR SESIÓN"
+					style="float: right; width: 180px; padding-right: 5px !important; margin-right: 15px; margin-top: 13px;"
+					icon="ui-icon-close" actionListener="#{loginController.logout}" />
+				<div rendered="#{identity.loggedIn}">
+					<div
+						style="float: right; width: 180px; padding-right: 10px !important; margin-top: 18px; font-size: large;">
+						<h:outputText class="cabeceraTXT" value="Rol: #{identity.rol}" />
+					</div>
+					<div style="float: right; width: 180px; margin-top: 18px; font-size: large;">
+						<h:outputText class="cabeceraTXT"
+							value="Usuario: #{identity.usuario}" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<div style="height: 2px" />
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.org/schema/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:form id="menu">
+		<div class="clearfix">
+			<div style="float:left;">
+         		<h:graphicImage url="/image/logo_cedei.jpg" style="border:0; height:40px;" />
+			</div>
+			<div style="float: left;height:40px;">
+				<p:menubar autodisplay="false" width="100%" rendered="#{identity.loggedIn}">
+
+					
+					<p:submenu label="Mantenimientos" >
+						<p:menuitem value="Usuarios" icon="ui-icon-person" url="/pages/usuarios/crudUsuarios.xhtml"/>
+						<p:menuitem value="Coches" icon="ui-icon-key" url="/crudCoches.xhtml"/>
+					</p:submenu>
+					
+					<p:menuitem value="Logout" icon="ui-icon-arrowreturnthick-1-n" action="#{loginController.logout}" />
+
+				</p:menubar>
+
+
+			</div>
+
+			
+		</div>
+	</h:form>
+
+
+</ui:composition>
